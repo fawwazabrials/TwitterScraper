@@ -98,21 +98,6 @@ class Tweet:
             "retweets": retweets,
             "likes": likes,
     }
-
-    def _extract_text(self, card):
-        """ 
-        Get text from a HTML element
-        Text + Emoji + Link to image (if exist)
-        """
-        
-        result = ""
-        for content in card.find_elements(By.XPATH, ".//*"):
-            if content.tag_name == "span":
-                result += content.text
-            if content.tag_name == "img":
-                result += content.get_attribute("alt")
-                
-        return result
     
     def _get_card_content(self, card):
         content = ""
@@ -123,9 +108,9 @@ class Tweet:
 
             if len(el) > 0:
                 if len(el) > 1:
-                    content += self._extract_text(el[0])
+                    content += self.extract_text(el[0])
                 else:
-                    content += self._extract_text(el[0])
+                    content += self.extract_text(el[0])
 
         except Exception as e:
             pass
