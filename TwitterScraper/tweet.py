@@ -41,18 +41,24 @@ class Tweet:
             # print(cards)
             for card in cards:
                 el = self._get_card_data(card)
-                if el not in data:
-                    data.append(el)
-                    print(el)
-                    self.driver.execute_script("arguments[0].scrollIntoView();", card)
-                    all_known = False
-                    break
+                try:
+                    if el not in data:
+                        data.append(el)
+                        print(el)
+                        self.driver.execute_script("arguments[0].scrollIntoView();", card)
+                        all_known = False
+                        break
+                except:
+                    pass
 
+            self._click_additionals()
             if all_known: break
 
         return data
 
     def _get_card_data(self, card):
+        self._click_notif()
+
         try:
             username_row = card.find_element(By.XPATH, ".//div[@data-testid='User-Name']").find_elements(By.TAG_NAME, 'a')
         except Exception as e:
@@ -108,12 +114,14 @@ class Tweet:
         content = ""
 
         try:
-            el = card.find_element(By.XPATH, ".//div[@data-testid='tweetText']")
-            if el.length > 1:
+            el = card.find_elements(By.XPATH, ".//div[@data-testid='tweetText']")
+            if type(el) != list: el = [el] 
+            if len(el) > 1:
                 content += self._extract_text(el[0])
             else:
-                content += self._extract_text(el)
-        except:
+                content += self._extract_text(el[0])
+        except Exception as e:
+            print(e)
             pass
 
         try:
@@ -138,4 +146,32 @@ class Tweet:
             pass
 
         return content
+    
+    def _click_notif(self):
+        try:
+            self.driver.find_element(By.XPATH, ".//*[@class='css-18t94o4 css-1dbjc4n r-1niwhzg r-1ets6dv r-sdzlij r-1phboty r-rs99b7 r-1wzrnnt r-19yznuf r-64el8z r-1ny4l3l r-1dye5f7 r-o7ynqc r-6416eg r-lrvibr']").click()
+        except:
+            pass
+
+    def _click_additionals(self):
+        try: # Click kalo ada "show more tweets"
+            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1777fci r-1pl7oy7 r-1ny4l3l r-o7ynqc r-6416eg r-13qz1uu"]'):
+                i.click()
+                time.sleep(0.5)
+        except:
+            pass
+
+        try: # Click kalo ada "show replies"
+            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-901oao r-1cvl2hr r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-5njf8e r-qvutc0"]'):
+                i.click()
+                time.sleep(0.5)
+        except:
+            pass
+
+        try: # Click kalo ada "show additional replies, may have offensive content"
+            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1niwhzg r-42olwf r-sdzlij r-1phboty r-rs99b7 r-15ysp7h r-4wgw6l r-1ny4l3l r-ymttw5 r-f727ji r-j2kj52 r-o7ynqc r-6416eg r-lrvibr"]'):
+                i.click()
+                time.sleep(0.5)
+        except:
+            pass
         
