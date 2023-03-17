@@ -70,7 +70,7 @@ class Tweet:
         
         username = username_row[0].text
         user_id = username_row[1].text
-        time = username_row[2].find_element(By.TAG_NAME, 'time').get_attribute("datetime")
+        time = parser.parse(username_row[2].find_element(By.TAG_NAME, 'time').get_attribute("datetime"))
 
         content = self._get_card_content(card)
 
@@ -99,7 +99,7 @@ class Tweet:
             "likes": likes,
     }
 
-    def _extract_text(card):
+    def _extract_text(self, card):
         """ 
         Get text from a HTML element
         Text + Emoji + Link to image (if exist)
@@ -113,7 +113,7 @@ class Tweet:
                 result += content.get_attribute("alt")
                 
         return result
-
+    
     def _get_card_content(self, card):
         content = ""
 
