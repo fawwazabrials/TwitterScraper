@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
 from dateutil import parser
+import json
 
 
 class Tweet:
@@ -34,25 +35,28 @@ class Tweet:
         return data
 
     def _safe_scroll(self, data):
+        curr_pos = self.driver.execute_script("return document.body.scrollHeight")
+
         while True:
             cards = self.driver.find_elements(By.XPATH, ".//article[@data-testid='tweet' and @tabindex='0']")
+            now = cards[0]
 
-            all_known = True
-            # print(cards)
             for card in cards:
-                el = self._get_card_data(card)
-                try:
-                    if el not in data:
-                        data.append(el)
-                        print(el)
-                        self.driver.execute_script("arguments[0].scrollIntoView();", card)
-                        all_known = False
-                        break
-                except:
-                    pass
+                tweet = self._get_card_data(card)
 
-            self._click_additionals()
-            if all_known: break
+                if tweet not in data:
+                    # print(json.dumps(tweet, indent=4))
+                    data.append(tweet)
+                    now = card
+                
+
+            self.driver.execute_script("arguments[0].scrollIntoView();", now)
+            last_pos = curr_pos
+            curr_pos = self.driver.execute_script("return document.body.scrollHeight")
+            time.sleep(2)
+
+            if last_pos == curr_pos:
+                break
 
         return data
 
@@ -116,12 +120,14 @@ class Tweet:
         try:
             el = card.find_elements(By.XPATH, ".//div[@data-testid='tweetText']")
             if type(el) != list: el = [el] 
-            if len(el) > 1:
-                content += self._extract_text(el[0])
-            else:
-                content += self._extract_text(el[0])
+
+            if len(el) > 0:
+                if len(el) > 1:
+                    content += self._extract_text(el[0])
+                else:
+                    content += self._extract_text(el[0])
+
         except Exception as e:
-            print(e)
             pass
 
         try:
