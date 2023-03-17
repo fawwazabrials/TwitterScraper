@@ -68,8 +68,15 @@ class Tweet:
         self.driver.get(url)
         time.sleep(3)
 
+        try:
+            self.driver.find_element(By.XPATH, "//*[contains(text(), 'Hmm...this page doesn’t exist. Try searching for something else.')]")
+            return None
+        except:
+            pass
+
         data = []
         data = self._safe_scroll(data)
+
         return data
 
     def _safe_scroll(self, data):
@@ -77,24 +84,25 @@ class Tweet:
 
         while True:
             cards = self.driver.find_elements(By.XPATH, ".//article[@data-testid='tweet' and @tabindex='0']")
-            now = cards[0]
+            if len(cards) > 0:
+                now = cards[0]
+                for card in cards:
+                    tweet = self._get_card_data(card)
 
-            for card in cards:
-                tweet = self._get_card_data(card)
+                    if tweet not in data:
+                        print(tweet)
+                        data.append(tweet)
+                        now = card
+                    
 
-                if tweet not in data:
-                    print(tweet)
-                    data.append(tweet)
-                    now = card
-                
+                self.driver.execute_script("arguments[0].scrollIntoView();", now)
+                last_pos = curr_pos
+                curr_pos = self.driver.execute_script("return document.body.scrollHeight")
+                time.sleep(2)
 
-            self.driver.execute_script("arguments[0].scrollIntoView();", now)
-            last_pos = curr_pos
-            curr_pos = self.driver.execute_script("return document.body.scrollHeight")
-            time.sleep(2)
-
-            if last_pos == curr_pos:
-                break
+                if last_pos == curr_pos:
+                    break
+            else: break
 
         return data
 
