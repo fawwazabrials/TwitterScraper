@@ -83,7 +83,7 @@ class Tweet:
                 tweet = self._get_card_data(card)
 
                 if tweet not in data:
-                    # print(json.dumps(tweet, indent=4))
+                    print(tweet)
                     data.append(tweet)
                     now = card
                 
@@ -108,7 +108,7 @@ class Tweet:
         
         username = username_row[0].text
         user_id = username_row[1].text
-        time = parser.parse(username_row[2].find_element(By.TAG_NAME, 'time').get_attribute("datetime"))
+        time = parser.parse(username_row[2].find_element(By.TAG_NAME, 'time').get_attribute("datetime")).strftime("%d/%m/%Y, %H:%M:%S")
 
         content = self._get_card_content(card)
 
