@@ -96,9 +96,9 @@ class Tweet:
                     
 
                 self.driver.execute_script("arguments[0].scrollIntoView();", now)
+                time.sleep(2)
                 last_pos = curr_pos
                 curr_pos = self.driver.execute_script("return document.body.scrollHeight")
-                time.sleep(2)
 
                 if last_pos == curr_pos:
                     break
