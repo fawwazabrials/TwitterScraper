@@ -207,23 +207,28 @@ class Tweet:
 
     def _click_additionals(self):
         try: # Click kalo ada "show more tweets"
-            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1777fci r-1pl7oy7 r-1ny4l3l r-o7ynqc r-6416eg r-13qz1uu"]'):
-                i.click()
-                time.sleep(0.5)
+            el = self.driver.find_element(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1777fci r-1pl7oy7 r-1ny4l3l r-o7ynqc r-6416eg r-13qz1uu"]')
+            el.click()
+            time.sleep(0.5)
+            return self.driver.find_element(el)
         except:
             pass
 
         try: # Click kalo ada "show replies"
-            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-901oao r-1cvl2hr r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-5njf8e r-qvutc0"]'):
-                i.click()
-                time.sleep(0.5)
+            el = self.driver.find_element(By.XPATH, '//div[@class="css-901oao r-1cvl2hr r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-5njf8e r-qvutc0"]')
+            el.click()
+            time.sleep(0.5)
+            return self.driver.find_element(el)
         except:
             pass
 
         try: # Click kalo ada "show additional replies, may have offensive content"
-            for i in self.driver.find_elements(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1niwhzg r-42olwf r-sdzlij r-1phboty r-rs99b7 r-15ysp7h r-4wgw6l r-1ny4l3l r-ymttw5 r-f727ji r-j2kj52 r-o7ynqc r-6416eg r-lrvibr"]'):
-                i.click()
-                time.sleep(0.5)
+            el = self.driver.find_element(By.XPATH, '//div[@class="css-18t94o4 css-1dbjc4n r-1niwhzg r-42olwf r-sdzlij r-1phboty r-rs99b7 r-15ysp7h r-4wgw6l r-1ny4l3l r-ymttw5 r-f727ji r-j2kj52 r-o7ynqc r-6416eg r-lrvibr"]')
+            el.click()
+            time.sleep(0.5)
+
+            return el
         except:
             pass
         
+        return None
