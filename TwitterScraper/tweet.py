@@ -28,9 +28,12 @@ class Tweet:
 
     def scrape_profile(self, user_id):
         self.driver.get(f"https://twitter.com/{user_id}")
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@class="css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0"]'))) # Wait for tweet count
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//a[@class="css-4rbku5 css-18t94o4 css-901oao r-18jsvk2 r-1loqt21 r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-qvutc0"]'))) # Wait for follower and following
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//span[@data-testid="UserJoinDate"]'))) # Wait for user joined date
+        try:
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@class="css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0"]'))) # Wait for tweet count
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//a[@class="css-4rbku5 css-18t94o4 css-901oao r-18jsvk2 r-1loqt21 r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-qvutc0"]'))) # Wait for follower and following
+            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//span[@data-testid="UserJoinDate"]'))) # Wait for user joined date
+        except:
+            self.driver.find_element(By.XPATH, "//span[contains(text(), 'Yes, view profile')]").click()
 
         tweet_count = self.driver.find_element(By.XPATH, ".//div[@class='css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0']").text.replace(" Tweets", '')
 
@@ -83,6 +86,7 @@ class Tweet:
         curr_pos = self.driver.execute_script("return document.body.scrollHeight")
 
         while True:
+            for i in range(10): self._click_additionals()
             cards = self.driver.find_elements(By.XPATH, ".//article[@data-testid='tweet' and @tabindex='0']")
             if len(cards) > 0:
                 now = cards[0]
