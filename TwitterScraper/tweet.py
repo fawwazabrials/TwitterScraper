@@ -91,11 +91,11 @@ class Tweet:
             pass
 
         data = []
-        data = self._safe_scroll(data)
+        data = self._scroll(data)
 
         return data
 
-    def _safe_scroll(self, data):
+    def _scroll(self, data):
         curr_pos = self.driver.execute_script("return document.body.scrollHeight")
 
         while True:
