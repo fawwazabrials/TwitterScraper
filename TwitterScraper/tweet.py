@@ -28,12 +28,25 @@ class Tweet:
 
     def scrape_profile(self, user_id):
         self.driver.get(f"https://twitter.com/{user_id}")
-        try:
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@class="css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0"]'))) # Wait for tweet count
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//a[@class="css-4rbku5 css-18t94o4 css-901oao r-18jsvk2 r-1loqt21 r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-qvutc0"]'))) # Wait for follower and following
-            WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//span[@data-testid="UserJoinDate"]'))) # Wait for user joined date
-        except:
-            self.driver.find_element(By.XPATH, "//span[contains(text(), 'Yes, view profile')]").click()
+        try: 
+            try:
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@class="css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0"]'))) # Wait for tweet count
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//a[@class="css-4rbku5 css-18t94o4 css-901oao r-18jsvk2 r-1loqt21 r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-qvutc0"]'))) # Wait for follower and following
+                WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//span[@data-testid="UserJoinDate"]'))) # Wait for user joined date
+            except: # Account must be clicked first before viewing
+                self.driver.find_element(By.XPATH, "//span[contains(text(), 'Yes, view profile')]").click()
+        except: # Account is deleted / not found
+            return (
+                {
+                    "biography": "ACCOUNT NOT FOUND!",
+                    "tweetCount": "ACCOUNT NOT FOUND!",
+                    "folllowing": "ACCOUNT NOT FOUND!",
+                    "followers": "ACCOUNT NOT FOUND!",
+                    "joinedDate": "ACCOUNT NOT FOUND!",
+                    "userLocation": "ACCOUNT NOT FOUND!",
+                    "profession": "ACCOUNT NOT FOUND!",
+                }
+            )
 
         tweet_count = self.driver.find_element(By.XPATH, ".//div[@class='css-901oao css-1hf3ou5 r-14j79pv r-37j5jr r-n6v787 r-16dba41 r-1cwl3u0 r-bcqeeo r-qvutc0']").text.replace(" Tweets", '')
 
